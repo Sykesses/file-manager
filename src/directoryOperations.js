@@ -16,17 +16,16 @@ export const directoryOperations = {
   },
   changeDirectory: async (currentDirectory, newDirectory) => {
     const newDir = path.resolve(currentDirectory, newDirectory);
-    console.log(newDir);
     try {
       const stats = await fs.promises.stat(newDir);
       if (!stats.isDirectory()) {
-        console.log(`Invalid 11`);
+        console.log(`Invalid input`);
         return currentDirectory;
       } else {
         return newDir;
       }
     } catch (err) {
-      console.log(`Invalid`);
+      console.log(`Invalid input`);
       return currentDirectory;
     }
   },

@@ -27,7 +27,13 @@ export const fileOperations = {
   },
   copyFile: (directory, sourceFileName, destinationFileName) => {
     const sourcePath = path.join(directory, sourceFileName);
-    const destinationPath = path.join(directory, destinationFileName);
+    const fileExtantion = path.extname(sourceFileName);
+    const randomNumber = Math.floor(Math.random() * 10000);
+    const destinationPath = path.join(
+      directory,
+      destinationFileName,
+      `/copiedFile${randomNumber}${fileExtantion}`
+    );
     const readStream = fs.createReadStream(sourcePath);
     const writeStream = fs.createWriteStream(destinationPath);
     readStream.pipe(writeStream);
@@ -40,11 +46,32 @@ export const fileOperations = {
   },
   moveFile: (directory, sourceFileName, destinationFileName) => {
     const sourcePath = path.join(directory, sourceFileName);
-    const destinationPath = path.join(directory, destinationFileName);
-    fs.rename(sourcePath, destinationPath, (err) => {
-      if (err) {
-        console.log(`Operation failed`);
-      }
+    const fileExtantion = path.extname(sourceFileName);
+    const randomNumber = Math.floor(Math.random() * 10000);
+    const destinationPath = path.join(
+      directory,
+      destinationFileName,
+      `/movedFile${randomNumber}${fileExtantion}`
+    );
+    const readStream = fs.createReadStream(sourcePath);
+    const writeStream = fs.createWriteStream(destinationPath);
+    readStream.pipe(writeStream);
+    readStream.on("error", (err) => {
+      console.log(`Operation failed`);
+    });
+    writeStream.on("error", (err) => {
+      console.log(`Operation failed`);
+    });
+    writeStream.on("close", () => {
+      fs.unlink(sourcePath, (err) => {
+        if (err) {
+          console.log("Operation failed", err);
+        } else {
+          console.log(
+            `File moved successfully from ${sourcePath} to ${destinationPath}`
+          );
+        }
+      });
     });
   },
   deleteFile: (directory, fileName) => {
