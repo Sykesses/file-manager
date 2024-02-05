@@ -15,23 +15,21 @@ export const fileOperations = {
     });
   },
   renameFile: (directory, oldFileName, newFileName) => {
-    fs.rename(
-      path.join(directory, oldFileName),
-      path.join(directory, newFileName),
-      (err) => {
-        if (err) {
-          console.log(`Operation failed`);
-        }
+    const oldFilePath = path.join(directory, oldFileName);
+    const newFilePath = path.join(path.dirname(oldFilePath), newFileName);
+    fs.rename(oldFilePath, newFilePath, (err) => {
+      if (err) {
+        console.log(`Operation failed`);
       }
-    );
+    });
   },
-  copyFile: (directory, sourceFileName, destinationFileName) => {
+  copyFile: (directory, sourceFileName, destinationDirectoryName) => {
     const sourcePath = path.join(directory, sourceFileName);
     const fileExtantion = path.extname(sourceFileName);
     const randomNumber = Math.floor(Math.random() * 10000);
     const destinationPath = path.join(
       directory,
-      destinationFileName,
+      destinationDirectoryName,
       `/copiedFile${randomNumber}${fileExtantion}`
     );
     const readStream = fs.createReadStream(sourcePath);

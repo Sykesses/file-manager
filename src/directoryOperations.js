@@ -25,7 +25,7 @@ export const directoryOperations = {
         return newDir;
       }
     } catch (err) {
-      console.log(`Invalid input`);
+      console.log(`Invalid`);
       return currentDirectory;
     }
   },
