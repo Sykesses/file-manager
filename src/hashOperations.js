@@ -1,4 +1,3 @@
-// hashOperations.js
 import fs from "fs";
 import crypto from "crypto";
 import path from "path";

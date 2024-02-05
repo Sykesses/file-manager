@@ -1,11 +1,10 @@
-// main.js
 import readline from "readline";
 import { fileOperations } from "./fileOperations.js";
 import { directoryOperations } from "./directoryOperations.js";
-import { osOperations } from "./osOperations.js";
+import { osSwitch } from "./osSwitch.js";
 import { hashOperations } from "./hashOperations.js";
 import { compressOperations } from "./compressOperations.js";
-import { join, dirname } from "node:path";
+import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const rl = readline.createInterface({
@@ -16,7 +15,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 let currentDirectory = __dirname;
 
-console.log(`Welcome to the File Manager!`);
+const getUsername = () => {
+  const index = process.argv.findIndex((arg) => arg.includes("--username="));
+  if (index !== -1) {
+    return process.argv[index].split("=")[1];
+  }
+  return "User";
+};
+
+const username = getUsername();
+
+console.log(`Welcome to the File Manager, ${username}!`);
+
+const exitProgram = () => {
+  console.log(`Goodbye, ${username}!`);
+  rl.close();
+};
 
 rl.on("line", async (input) => {
   const [command, ...args] = input.trim().split(" ");
@@ -56,7 +70,7 @@ rl.on("line", async (input) => {
       fileOperations.deleteFile(currentDirectory, args[0]);
       break;
     case "os":
-      osOperations.processOsOperation(args);
+      osSwitch.processOsOperation(args);
       break;
     case "hash":
       hashOperations.calculateHash(currentDirectory, args[0]);
@@ -67,13 +81,15 @@ rl.on("line", async (input) => {
     case "decompress":
       compressOperations.decompressFile(currentDirectory, args[0], args[1]);
       break;
+    case ".exit":
+      exitProgram();
+      break;
     default:
       console.log(`Invalid input`);
   }
   directoryOperations.printCurrentDirectory(currentDirectory);
 });
 
-process.on("SIGINT", () => {
-  console.log(`Goodbye!`);
-  rl.close();
+rl.on("SIGINT", () => {
+  exitProgram();
 });

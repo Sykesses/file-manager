@@ -1,11 +1,14 @@
-// compressOperations.js
 import fs from "fs";
 import zlib from "zlib";
 import path from "path";
 
 export const compressOperations = {
-  compressFile: (directory, sourceFile, destinationFile) => {
+  compressFile: (directory, sourceFile) => {
     const sourcePath = path.join(directory, sourceFile);
+    const destinationFile = `${path.basename(
+      sourceFile,
+      path.extname(sourceFile)
+    )}.txt.br`;
     const destinationPath = path.join(directory, destinationFile);
     const compressInput = fs.createReadStream(sourcePath);
     const compressOutput = fs.createWriteStream(destinationPath);
